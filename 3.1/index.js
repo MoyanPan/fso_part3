@@ -1,6 +1,20 @@
 const { response, request } = require('express')
 const express = require('express')
 const app = express()
+const morgan = require("morgan")
+const cors = require('cors')
+app.use(cors())
+
+morgan.token('ob', function (req) {
+  console.log(req);
+  return `${JSON.stringify(req.body)}`
+})
+
+app.use(morgan(':method :url :status :response-time :req[header] :ob'))
+
+app.get('/', function (req, res) {
+  res.send('hello, morgan!')
+})
 app.use(express.json())
 let persons = [
     {
@@ -32,6 +46,7 @@ app.get('/api/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
+
   response.json(persons)
 })
 
@@ -52,8 +67,7 @@ app.get('/api/delete/:id',(request,response) => {
 
 })
 
-app.post('/api/notes',(request,response) =>{
-    let status = 1
+app.post('/api/persons',(request,response) =>{
     let newperson = request.body
     if(newperson.name.length === 0 || newperson.number.length === 0 ){
         response.status(404).send({error: "name or number is empty"})
