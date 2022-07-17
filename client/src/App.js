@@ -15,7 +15,7 @@ const Name = (props) =>{
   return(
     <div>
       <p>
-        {props.name}: {props.phone}
+        {props.name}: {props.number}
         
       </p>
     </div>
@@ -36,7 +36,7 @@ const Addnew = (props) => {
     <div>
       name: <input value = {props.newName} onChange={props.handleNameChange}/>
     </div>
-    <div>number: <input value = {props.phone} onChange={props.handlePhoneChange}/></div>
+    <div>number: <input value = {props.number} onChange={props.handlenumberChange}/></div>
     <div>
       <button type="submit">add</button>
     </div>
@@ -46,35 +46,35 @@ const Addnew = (props) => {
 const Person = (props) => {
   console.log(props.personstoshow);
   return(
-    <div>{props.personstoshow.map(person => <Name key = {person.name} name = {person.name} phone = {person.number}/>)}</div>
+    <div>{props.personstoshow.map(person => <Name key = {person.name} name = {person.name} number = {person.number}/>)}</div>
   )
 }
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
-  const [phone,setPhone] = useState('')
+  const [number,setnumber] = useState('')
   const [filter, setFilter] = useState('')
   const addName = (event) =>{
     event.preventDefault()
     if (persons.some(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+      window.alert(`${newName} is already added to numberbook`)
     }
     else{
       const newperson = {
         name:newName,
-        phone:phone,
+        number:number,
         id:persons.length+1
       }
       setPersons(persons.concat(newperson))
       setNewName("")
-      setPhone("")
+      setnumber("")
     }
   }
    const handleNameChange = (event) =>{
     setNewName(event.target.value)
   }
-  const handlePhoneChange = (event) =>{
-    setPhone(event.target.value)
+  const handlenumberChange = (event) =>{
+    setnumber(event.target.value)
   }
   const personstoshow = filter.length === 0
   ? persons
@@ -92,11 +92,11 @@ const App = () => {
   useEffect(hook,[])
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h2>numberbook</h2>
       <Filter filter = {filter} function = {handleFilterChange}/>
       <h2>add new</h2>
-      <Addnew addName = {addName} newName = {newName} handleNameChange = {handleNameChange} phone = {phone}
-      handlePhoneChange = {handlePhoneChange}/> 
+      <Addnew addName = {addName} newName = {newName} handleNameChange = {handleNameChange} number = {number}
+      handlenumberChange = {handlenumberChange}/> 
       <h2>Numbers</h2>
       <Person personstoshow = {personstoshow}/>
     </div>
