@@ -82,7 +82,7 @@ const App = () => {
   const handleFilterChange = (event) =>{
     setFilter(event.target.value)
   }
-  const baseurl = "http://localhost:3000/api/persons"
+  const baseurl = "/api/persons"
   const hook = () =>{
     axios.get(baseurl)
     .then(response => {
