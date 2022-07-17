@@ -7,6 +7,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
+
 app.use(morgan((tokens, req, res) => {
   return [
     tokens.method(req, res),
@@ -51,8 +52,7 @@ app.get('/api/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-
-  response.json(persons)
+  response.status(200).json(persons)
 })
 
 
@@ -92,7 +92,7 @@ app.post('/api/persons',(request,response) =>{
 
 
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
