@@ -15,10 +15,11 @@ const Name = (props) =>{
     var data = JSON.stringify({
       "name": name
     });
-    
+    //After the build, the API is "/api/deletePerson"
+    //Before the build, the API is "http://localhost:3000/api/deletePerson"
     var config = {
       method: 'post',
-      url: 'http://localhost:3000/api/deletePerson',
+      url: '/api/deletePerson',
       headers: { 
         'Content-Type': 'application/json'
       },
@@ -86,10 +87,11 @@ const App = () => {
         "name": newName,
         "number": number
       });
-      
+      //After the build, the API is "/api/persons"
+      //Before the build, the API is "http://localhost:3000/api/persons"
       const config = {
         method: 'post',
-        url: 'http://localhost:3000/api/persons',
+        url: '/api/persons',
         headers: { 
           'Content-Type': 'application/json'
         },
