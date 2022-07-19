@@ -3,31 +3,21 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const axios = require('axios')
-// const morgan = require('morgan')
+const morgan = require('morgan')
 require('dotenv').config()
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
-
-
-
-// app.use(morgan((tokens, req, res) => {
-//   return [
-//     tokens.method(req, res),
-//     tokens.url(req, res),
-//     tokens.status(req, res),
-//     tokens.res(req, res, 'content-length'), '-',
-//     tokens['response-time'](req, res), 'ms',
-//     JSON.stringify(req.body)
-//   ].join(' ')
-// }))
-let time = new Date()
-app.get('/', function (req, res) {
-  res.send('hello, morgan!')
-})
-
-
-
+app.use(morgan((tokens, req, res) => {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    JSON.stringify(req.body)
+  ].join(' ')
+}))
 
 app.get('/api/info', (request, response) => {
   response.send(`<h1>Phone has info for ${persons.length} people<br><h1>${time}</h1></h1>`)
@@ -39,22 +29,6 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-    if(person){
-        response.json(person)
-    }else{
-        response.status(204).end()
-    }
-  })
-app.get('/api/delete/:id',(request,response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
-
-})
 
 app.post('/api/persons',(request,response) =>{
     let newperson = request.body
