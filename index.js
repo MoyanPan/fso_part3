@@ -57,17 +57,16 @@ app.get('/api/delete/:id',(request,response) => {
 
 app.post('/api/persons',(request,response) =>{
     let newperson = request.body
+    console.log(newperson);
     if(newperson.name.length === 0 || newperson.number.length === 0 ){
         response.status(404).send({error: "name or number is empty"})
     }
     if(persons.find(person => person.name === newperson.name)){
         response.status(404).send({error: "the user is alreay in persons."})
     }
-
-
     const newid =  Math.floor(Math.random() * 1000)
     newperson = {"id":newid,...newperson}
-    persons.push(newperson)
+    Person.create({newperson})
     response.json(newperson)
 
 })

@@ -44,7 +44,6 @@ const Addnew = (props) => {
   )
 }
 const Person = (props) => {
-  console.log(props.personstoshow);
   return(
     <div>{props.personstoshow.map(person => <Name key = {person.name} name = {person.name} number = {person.number}/>)}</div>
   )
