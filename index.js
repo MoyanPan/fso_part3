@@ -2,7 +2,8 @@ const Person = require("./models/person")
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const morgan = require('morgan')
+const axios = require('axios')
+// const morgan = require('morgan')
 require('dotenv').config()
 app.use(cors())
 app.use(express.json())
@@ -10,16 +11,16 @@ app.use(express.static('build'))
 
 
 
-app.use(morgan((tokens, req, res) => {
-  return [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms',
-    JSON.stringify(req.body)
-  ].join(' ')
-}))
+// app.use(morgan((tokens, req, res) => {
+//   return [
+//     tokens.method(req, res),
+//     tokens.url(req, res),
+//     tokens.status(req, res),
+//     tokens.res(req, res, 'content-length'), '-',
+//     tokens['response-time'](req, res), 'ms',
+//     JSON.stringify(req.body)
+//   ].join(' ')
+// }))
 let time = new Date()
 app.get('/', function (req, res) {
   res.send('hello, morgan!')
@@ -57,18 +58,18 @@ app.get('/api/delete/:id',(request,response) => {
 
 app.post('/api/persons',(request,response) =>{
     let newperson = request.body
-    console.log(newperson);
+    console.log("new person is",newperson);
     if(newperson.name.length === 0 || newperson.number.length === 0 ){
         response.status(404).send({error: "name or number is empty"})
     }
-    if(persons.find(person => person.name === newperson.name)){
-        response.status(404).send({error: "the user is alreay in persons."})
-    }
-    const newid =  Math.floor(Math.random() * 1000)
-    newperson = {"id":newid,...newperson}
-    Person.create({newperson})
-    response.json(newperson)
-
+    const person = new Person({
+      id : Math.floor(Math.random() * 10000),
+      name : newperson.name,
+      number : newperson.number
+    })
+    person.save().then(savedPerson =>{
+      response.json(savedPerson)
+    })
 })
 
 
