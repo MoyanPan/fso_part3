@@ -11,12 +11,34 @@ import React, { useState,useEffect} from 'react'
 // onemorelane
 
 const Name = (props) =>{
+  const Deletefunc = (name) =>{
+    var data = JSON.stringify({
+      "name": name
+    });
+    
+    var config = {
+      method: 'post',
+      url: 'http://localhost:3000/api/deletePerson',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : data
+    };
+    
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      props.hook()
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
   return(
     <div>
       <p>
-        {props.name}: {props.number}
-        
+        {props.name}: {props.number}<button type="submit" onClick={() => Deletefunc(props.name)}>delete</button>
       </p>
     </div>
   )
@@ -45,7 +67,7 @@ const Addnew = (props) => {
 }
 const Person = (props) => {
   return(
-    <div>{props.personstoshow.map(person => <Name key = {person.name} name = {person.name} number = {person.number}/>)}</div>
+    <div>{props.personstoshow.map(person => <Name key = {person.name} name = {person.name} number = {person.number} hook = {props.hook}/>)}</div>
   )
 }
 const App = () => {
@@ -55,16 +77,33 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const addName = (event) =>{
     event.preventDefault()
-    if (persons.some(person => person.name === newName)) {
+    if (persons.some(person => person.name === newName) || number.length === 0) {
       window.alert(`${newName} is already added to numberbook`)
     }
     else{
-      const newperson = {
-        name:newName,
-        number:number,
-        id:persons.length+1
-      }
-      setPersons(persons.concat(newperson))
+      const data = JSON.stringify({
+        "id" : Math.floor(Math.random() * 100000),
+        "name": newName,
+        "number": number
+      });
+      
+      const config = {
+        method: 'post',
+        url: 'http://localhost:3000/api/persons',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+      
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        hook()
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
       setNewName("")
       setnumber("")
     }
@@ -81,7 +120,8 @@ const App = () => {
   const handleFilterChange = (event) =>{
     setFilter(event.target.value)
   }
-  const baseurl = "/api/persons"
+  //After build, the API is "/api/persons"
+  const baseurl = "http://localhost:3000/api/persons"
   const hook = () =>{
     axios.get(baseurl)
     .then(response => {
@@ -97,7 +137,7 @@ const App = () => {
       <Addnew addName = {addName} newName = {newName} handleNameChange = {handleNameChange} number = {number}
       handlenumberChange = {handlenumberChange}/> 
       <h2>Numbers</h2>
-      <Person personstoshow = {personstoshow}/>
+      <Person personstoshow = {personstoshow} hook={hook}/>
     </div>
   )
 }
