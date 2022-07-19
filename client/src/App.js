@@ -120,8 +120,9 @@ const App = () => {
   const handleFilterChange = (event) =>{
     setFilter(event.target.value)
   }
-  //After build, the API is "/api/persons"
-  const baseurl = "http://localhost:3000/api/persons"
+  //After the build, the API is "/api/persons"
+  //Before the build, the API is "http://localhost:3000/api/persons"
+  const baseurl = "/api/persons"
   const hook = () =>{
     axios.get(baseurl)
     .then(response => {
