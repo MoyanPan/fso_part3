@@ -19,7 +19,7 @@ const Name = (props) =>{
     //Before the build, the API is "http://localhost:3000/api/deletePerson"
     var config = {
       method: 'post',
-      url: 'http://localhost:3000/api/deletePerson',
+      url: '/api/deletePerson',
       headers: { 
         'Content-Type': 'application/json'
       },
