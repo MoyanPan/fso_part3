@@ -20,6 +20,9 @@ app.use(express.static('build'))
 //   ].join(' ')
 // }))
 
+
+
+
 app.get('/api/info', (request, response) => {
   response.send(`<h1>Phone has info for ${persons.length} people<br><h1>${time}</h1></h1>`)
 })
@@ -33,7 +36,6 @@ app.get('/api/persons', (request, response) => {
 
 app.post('/api/persons',(request,response) =>{
     let newperson = request.body
-    console.log("new person is",newperson);
     if(newperson.name.length === 0 || newperson.number.length === 0 ){
         response.status(404).send({error: "name or number is empty"})
     }
@@ -51,11 +53,40 @@ app.post("/api/deletePerson",(request,response,next) =>{
   const name = request.body.name
   const deleted =Person.deleteOne({name:name})
   .then(result => {
-    response.status(204).end()
+    if(deleted){
+      response.status(200).end()
+    }else{
+      response.status(404).end()
+    }
   })
   .catch(error => next(error))
 })
 
+
+
+
+
+
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+// this has to be the last loaded middleware.
+app.use(errorHandler)
 
 
 const PORT = process.env.PORT || 3000
