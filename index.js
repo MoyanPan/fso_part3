@@ -44,9 +44,12 @@ app.post('/api/persons',(request,response) =>{
       name : newperson.name,
       number : newperson.number
     })
-    person.save().then(savedPerson =>{
-      response.json(savedPerson)
+    Person.create(person,function(err,res){
+      if(err) throw err;
+      console.log("one document inserted")
+      response.json(res.body)
     })
+    // Person.replaceOne(person,{name:newperson.name,number:newperson.number},{upsert:true})
 })
 
 app.post("/api/deletePerson",(request,response,next) =>{
@@ -62,7 +65,36 @@ app.post("/api/deletePerson",(request,response,next) =>{
   .catch(error => next(error))
 })
 
+app.post('/api/updatePerson',(request,response) =>{
+  let newperson = request.body
+  Person.findOneAndUpdate({"name":newperson.name},{$set: {number:newperson.number}}).then(result => {
+    response.status(200).json(result).end()
+  }
+  ).catch(error => {console.log(error)})
 
+  // try{
+  //   const person = Person.updateOne({ name : newperson.name,number : newperson.number},{ $set: { number : newperson.number} })
+  //   response.status(200).json(person) 
+  // }catch(e){
+  //   console.log(e)
+  // }
+
+})
+
+app.get('/api/person/:id', (request, response) => {
+  Person.findById(request.params.id)
+    .then(note => {
+      if (note) {
+        response.json(note)
+      } else {
+        response.status(404).end() 
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id' })
+    })
+})
 
 
 
@@ -80,6 +112,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)

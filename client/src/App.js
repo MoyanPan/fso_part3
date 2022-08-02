@@ -78,10 +78,12 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const addName = (event) =>{
     event.preventDefault()
-    if (persons.some(person => person.name === newName) || number.length === 0) {
-      window.alert(`${newName} is already added to numberbook`)
+    // http://localhost:3000/api/updatePerson || http://localhost:3000/api/persons
+    let curl = persons.some(person => person.name === newName)? '/api/updatePerson' : '/api/persons'
+    if (number.length === 0) {
+      window.alert(`number cannot be null`)
+      return;
     }
-    else{
       const data = JSON.stringify({
         "id" : Math.floor(Math.random() * 100000),
         "name": newName,
@@ -91,7 +93,7 @@ const App = () => {
       //Before the build, the API is "http://localhost:3000/api/persons"
       const config = {
         method: 'post',
-        url: '/api/persons',
+        url: curl,
         headers: { 
           'Content-Type': 'application/json'
         },
@@ -108,7 +110,6 @@ const App = () => {
       });
       setNewName("")
       setnumber("")
-    }
   }
    const handleNameChange = (event) =>{
     setNewName(event.target.value)
